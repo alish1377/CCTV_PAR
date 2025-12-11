@@ -7,12 +7,18 @@ Pedestrian Attribute Recognition (PAR) is recognized as one of the surveillance 
    - **Full fine-tuning**: Tune all layers, including Transformer, Channel-aware swinT, Cross-fusion, and head blocks
    - **Partial fine-tuning**: Tune the cross-fusion and head layers and freeze primary transformer-based blocks
    - **Head fine-tuning**: Tune the head block and freeze the transformer-based and fusion blocks
-   - 
+     
 3. **Loss function optimization**: The native dataset is not balanced for all attributes. As the presence probability of many attributes is much lower than the absence of them, we use loss-based optimization approaches to consider positive samples(boxes include an attribute) more than negative samples(boxes don't include an attribute) in the model. The techniques are summarized as:
    - **Categorical Loss**: Introduces category-level supervision to better capture attribute group dependencies.
    - **Sample Weighting**: Adjusts loss contributions based on the imbalance of positive and negative label distributions.
    - **Logit Updating**: Refines predicted logits using recall information from positive and negative labels.
    - **GradNorm**: Learns separate weights for each attribute in addition to learning the base model weights.
    - **Focal Loss**: Reweights the loss to focus learning on harder, less frequent samples.
+
+## Download Dataset
+
+
+
+
 
    
