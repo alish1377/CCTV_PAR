@@ -1,0 +1,113 @@
+import time
+
+import numpy as np
+from easydict import EasyDict
+import torch
+
+
+def get_pedestrian_metrics(gt_label, preds_probs, threshold=0.5, index=None, cfg=None):
+    """
+    index: evaluated label index
+    """
+    pred_label = preds_probs > threshold
+
+    eps = 1e-30
+    result = EasyDict()
+
+    if index is not None:
+        pred_label = pred_label[:, index]
+        gt_label = gt_label[:, index]
+
+    ###############################
+    # label metrics
+    # TP + FN
+    gt_pos = np.sum((gt_label == 1), axis=0).astype(float)
+    # print(gt_pos)
+    # TN + FP
+    gt_neg = np.sum((gt_label == 0), axis=0).astype(float)
+    # TP
+    true_pos = np.sum((gt_label == 1) * (pred_label == 1), axis=0).astype(float)
+    # TN
+    true_neg = np.sum((gt_label == 0) * (pred_label == 0), axis=0).astype(float)
+    # FP
+    false_pos = np.sum(((gt_label == 0) * (pred_label == 1)), axis=0).astype(float)
+    # FN
+    false_neg = np.sum(((gt_label == 1) * (pred_label == 0)), axis=0).astype(float)
+
+    mask = gt_pos !=0
+    filtered_gt_pos = gt_pos[mask]
+    filtered_true_pos = true_pos[mask]
+    filtered_false_neg = false_neg[mask]
+
+
+    # print("gt_pos: ", gt_pos)
+    # print("gt_neg: ", gt_neg)
+    # print("true pos: ", true_pos)
+    # print("true_neg: ", true_neg)
+
+    label_pos_recall = 1.0 * true_pos / (gt_pos + eps)
+    filtered_label_pos_recall = 1.0 * filtered_true_pos / (filtered_gt_pos + eps)  # true positive
+    label_neg_recall = 1.0 * true_neg / (gt_neg + eps)  # true negative
+    # mean accuracy
+    # I comment the following line, because the dimensions of 2 arrays are not similar
+    # So, computing result.label_ma is not possible for the current dataset
+    # label_ma = (label_pos_recall + label_neg_recall) / 2
+    # print("label_pos_recall......")
+    # print(filtered_label_pos_recall)
+    #
+    # print("label_neg_recall......")
+    # print(label_neg_recall)
+
+    attr_acc = 1.0 * (true_pos + true_neg) / (gt_pos + gt_neg + eps)
+    # print("true mean")
+    # print(attr_acc)
+    result.attr_acc = attr_acc
+
+    result.label_pos_recall = label_pos_recall
+    result.filtered_label_pos_recall = filtered_label_pos_recall
+    result.label_neg_recall = label_neg_recall
+    result.label_prec = true_pos / (true_pos + false_pos + eps)
+    result.label_acc = true_pos / (true_pos + false_pos + false_neg + eps)
+    result.label_f1 = 2 * result.label_prec * result.label_pos_recall / (
+            result.label_prec + result.label_pos_recall + eps)
+
+    # result.label_ma = label_ma
+    result.ma = (np.mean(label_neg_recall) + np.mean(filtered_label_pos_recall))/2
+
+    ################
+    # instance metrics
+    gt_pos = np.sum((gt_label == 1), axis=1).astype(float)
+    true_pos = np.sum((pred_label == 1), axis=1).astype(float)
+    # true positive
+    intersect_pos = np.sum((gt_label == 1) * (pred_label == 1), axis=1).astype(float)
+    # print("intersection positive:")
+    # print(intersect_pos)
+    # IOU
+    union_pos = np.sum(((gt_label == 1) + (pred_label == 1)), axis=1).astype(float)
+
+    vector_instance_acc = intersect_pos / (union_pos + eps)
+    vector_instance_prec = intersect_pos / (true_pos + eps)
+    vector_instance_recall = intersect_pos / (gt_pos + eps)
+    vector_instance_f1 = (2 * vector_instance_prec * vector_instance_recall /
+                          (vector_instance_prec + vector_instance_recall + eps))
+
+    instance_acc = np.mean(vector_instance_acc)
+    instance_prec = np.mean(vector_instance_prec)
+    instance_recall = np.mean(vector_instance_recall)
+    # instance_f1 = np.mean(instance_f1)
+    instance_f1 = 2 * instance_prec * instance_recall / (instance_prec + instance_recall + eps)
+
+
+    result.vector_instance_acc = vector_instance_acc
+    result.vector_instance_prec = vector_instance_prec
+    result.vector_instance_recall = vector_instance_recall
+    result.vector_instance_f1 = vector_instance_f1
+
+    result.instance_acc = instance_acc
+    result.instance_prec = instance_prec
+    result.instance_recall = instance_recall
+    result.instance_f1 = instance_f1
+
+    result.error_num, result.fn_num, result.fp_num = false_pos + false_neg, false_neg, false_pos
+
+    return result

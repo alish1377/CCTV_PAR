@@ -1,0 +1,78 @@
+NAME: '_test1'   # name of the test saved in the exp_result directory(exp_result/[model]_test1/...)
+
+DATASET:
+  TYPE: 'pedes'   # type of the dataset
+  NAME: 'NATIVE'  # name of the config
+  TRAIN_SPLIT: 'trainval'  # type of the split process(not used for native dataset)
+  VAL_SPLIT: 'test'   # validation split type(not used for native dataset)
+  ZERO_SHOT: False  # disable zero shot flag
+  LABEL: 'eval' # label name
+  HEIGHT: 256 # height of box
+  WIDTH: 128  # width of box(for resnet models should be 192)
+
+  IMAGE_PATH: 'data/NATIVE/main_data/filtered_refined_data'    # input directory for boxes
+  TRAIN_NATIVE_SPLIT: 0.7  # ratio of training set
+  VAL_NATIVE_SPLIT: 0.3 # ratio of validation set
+  TEST_NATIVE_SPLIT: 0.0 # ratio of test set (we ser it zero because the number of data, so we set it zero to assign enough boxes for train and valdiation)
+  NATIVE_EXCEL: 'data/NATIVE/label/refined_Native_dataset.xlsx'   # excel of labels
+  REMOVE_LOW_QUALITY: False  # If true, remove low quality boxes
+
+  # names of attributes
+  ATTRS : ["Age_young", "Age_adult", "Age_old", "Gender_female", "Hair_short",
+          "Hair_long", "Hair_bald", "Upper_short", "U_black", "U_blue",
+          "U_brown", "U_green", "U_grey", "U_orange", "U_pink", "U_purple",
+          "U_red", "U_white", "U_yellow", "////U_Others////", "L_black", "L_blue",
+          "L_brown", "L_green", "L_grey", "L_orange", "L_pink", "L_purple",
+          "L_red", "L_white", "L_yellow", "////L_Others////", "Backpack", "Bag", "Glasses",
+          "Sunglasses", "Hat"]
+
+
+RELOAD: # reload the model
+  TYPE: True # set this flag, reload the model(use this if we want to load aa 40 attributes)
+  NAME: 'backbone'
+  MODEL_FOLDER_NAME: 'pretrained_model'
+  FREEZE: False # set this flag, if you want to freeze the backbone(use this if we want to train the classifier only)
+  PARTIAL_FINE_TUNING: False # set this flag, if you want train cross-fusion and head blocks
+  # Enable adaptformer
+  ADAPTFORMER: False # set this flag, if you want to use adaptformer(use this if we want to train the classifier only)
+  # Select half of data for adaptformer
+  HALFADAPTRATIO : 1.0
+  CONTINUE_CONVNEXT: False # set this flag, if you want to continue the convnext training(use this if we want to train the classifier only)
+
+
+
+BACKBONE:
+  TYPE: 'swin_b' # swin_t/s/b _____ convnext_tiny/base/large _____ resnet18/50/101
+
+CLASSIFIER:
+  NAME: 'linear'
+  POOLING: 'avg'
+  SCALE: 1
+  BN: False
+
+LOSS:
+  TYPE: 'gradnormloss' # Type of the loss function: [bceloss], [scaledbceloss], [gradnormloss], [focalloss], [myloss](categorical loss)
+  LOSS_WEIGHT: [1]
+  SAMPLE_WEIGHT: "weight" # Type of the sample weight: [weight], [none]
+  SIZESUM: True # Set this variable if you want to sum the loss of all attributes
+  POSE_SCALE: False   # Set this variable if we want to increase the rate of positive samples in scaledbceloss calculation
+
+
+TRAIN:
+  CLIP_GRAD: True
+  BATCH_SIZE: 1
+  OPTIMIZER:
+    TYPE: 'adam'
+    WEIGHT_DECAY: 0.005
+  LR_SCHEDULER:
+    TYPE: 'plateau'
+    LR_FT: 0.00001
+    LR_NEW: 0.0001
+  EMA:
+    ENABLE: False
+
+METRIC:
+  TYPE: 'pedestrian'
+
+VIS:
+  CAM: 'valid'

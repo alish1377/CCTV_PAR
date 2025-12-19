@@ -1,0 +1,30 @@
+# --- Core ---
+ipython
+numpy<2
+scipy
+pandas
+matplotlib
+tqdm
+Pillow
+opencv_python
+scikit_learn
+psutil
+openpyxl
+pytest
+setuptools
+validators
+tensorboard
+
+# --- ML / Vision ---
+einops
+timm
+ttach
+visdom
+yacs
+easydict
+ultralytics
+
+# --- PyTorch (CUDA 11.8) ---
+torch==2.1.2+cu118
+torchvision==0.16.2+cu118
+

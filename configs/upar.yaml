@@ -1,0 +1,96 @@
+NAME: '_convnext_base_COLOR_test2'
+
+DATASET:
+  TYPE: 'pedes'
+  NAME: 'UPAR'
+  TRAIN_SPLIT: 'trainval'
+  VAL_SPLIT: 'test'
+  ZERO_SHOT: False
+  LABEL: 'eval'
+  HEIGHT: 256
+  WIDTH: 128
+  PHASE1_ROOT_PATH: 'data/phase1/annotations/phase1/'
+  PHASE2_ROOT_PATH: 'data/phase2'
+  ROOT_PATH: 'data/phase1'
+
+  ALL_ATTRS: [ "Age_young", "Age_adult", "Age_old", "Gender_female", "Hair-Length-Short",
+           "Hair-Length-Long", "Hair-Length-Bald", "UpperBody-Length-Short", "UpperBody-Color-Black", "UpperBody-Color-Blue",
+           "UpperBody-Color-Brown", "UpperBody-Color-Green", "UpperBody-Color-Grey", "UpperBody-Color-Orange", "UpperBody-Color-Pink", "UpperBody-Color-Purple",
+           "UpperBody-Color-Red", "UpperBody-Color-White", "UpperBody-Color-Yellow", "UpperBody-Color-Other","LowerBody-Length-Short","LowerBody-Color-Black", "LowerBody-Color-Blue",
+           "LowerBody-Color-Brown", "LowerBody-Color-Green", "LowerBody-Color-Grey", "LowerBody-Color-Orange", "LowerBody-Color-Pink", "LowerBody-Color-Purple",
+           "LowerBody-Color-Red", "LowerBody-Color-White", "LowerBody-Color-Yellow", "LowerBody-Color-Other", "LowerBody-Type-Trousers&Shorts", "LowerBody-Type-Skirt&Dress","Accessory-Backpack", "Accessory-Bag", "Accessory-Glasses-Normal",
+           "Accessory-Glasses-Sun", "Accessory-Hat" ]
+
+
+  ATTRS: [ "Age_young", "Age_adult", "Age_old", "Gender_female", "Hair-Length-Short",
+           "Hair-Length-Long", "Hair-Length-Bald", "UpperBody-Length-Short", "UpperBody-Color-Black", "UpperBody-Color-Blue",
+           "UpperBody-Color-Brown", "UpperBody-Color-Green", "UpperBody-Color-Grey", "UpperBody-Color-Orange", "UpperBody-Color-Pink", "UpperBody-Color-Purple",
+           "UpperBody-Color-Red", "UpperBody-Color-White", "UpperBody-Color-Yellow", "UpperBody-Color-Other", "LowerBody-Color-Black", "LowerBody-Color-Blue",
+           "LowerBody-Color-Brown", "LowerBody-Color-Green", "LowerBody-Color-Grey", "LowerBody-Color-Orange", "LowerBody-Color-Pink", "LowerBody-Color-Purple",
+           "LowerBody-Color-Red", "LowerBody-Color-White", "LowerBody-Color-Yellow", "LowerBody-Color-Other", "Accessory-Backpack", "Accessory-Bag", "Accessory-Glasses-Normal",
+           "Accessory-Glasses-Sun", "Accessory-Hat" ]
+
+  COLOR_ATTRS: ["UpperBody-Color-Black", "UpperBody-Color-Blue",
+           "UpperBody-Color-Brown", "UpperBody-Color-Green", "UpperBody-Color-Grey", "UpperBody-Color-Orange", "UpperBody-Color-Pink", "UpperBody-Color-Purple",
+           "UpperBody-Color-Red", "UpperBody-Color-White", "UpperBody-Color-Yellow", "UpperBody-Color-Other", "LowerBody-Color-Black", "LowerBody-Color-Blue",
+           "LowerBody-Color-Brown", "LowerBody-Color-Green", "LowerBody-Color-Grey", "LowerBody-Color-Orange", "LowerBody-Color-Pink", "LowerBody-Color-Purple",
+           "LowerBody-Color-Red", "LowerBody-Color-White", "LowerBody-Color-Yellow", "LowerBody-Color-Other" ]
+
+  OTHER_ATTRS: ["Age-Young", "Age-Adult", "Age-Old", "Gender-Female", "Hair-Length-Short",
+           "Hair-Length-Long", "Hair-Length-Bald", "UpperBody-Length-Short", "Accessory-Backpack", "Accessory-Bag", "Accessory-Glasses-Normal",
+           "Accessory-Glasses-Sun", "Accessory-Hat" ]
+
+  # This variable will be used in dataset/pedes_attr/pedes.py
+  # The variable should be either "whole", "like_native", "color" or "other".
+  # Otherwise, assertion error would come up.
+  WHICH_ATTRS: "color"
+
+
+
+RELOAD:
+  TYPE: False
+  NAME: 'backbone'
+  BEST_PRETRAINED_WEIGHT: "exp_result/UPAR/convnext_base_convnext_base_COLOR_test1/img_model/best_model.pth"
+  PRETRAINED_FLAG: False
+  FREEZE: False
+  PARTIAL_FINE_TUNING: False
+  CONTINUE_CONVNEXT: True
+
+  # Enable adaptformer
+  ADAPTFORMER: False
+  # Select half of data for adaptformer
+  HALFADAPTRATIO : 1.0
+
+BACKBONE:
+  TYPE: 'convnext_base' # swin_t/s/b
+
+CLASSIFIER:
+  NAME: 'linear'
+  POOLING: 'avg'
+  SCALE: 1
+  BN: False
+
+LOSS:
+  TYPE: 'scaledbceloss'
+  LOSS_WEIGHT: [1]
+  SAMPLE_WEIGHT: 'weight'
+
+
+TRAIN:
+  CLIP_GRAD: True
+  BATCH_SIZE: 8
+  OPTIMIZER:
+    TYPE: 'adam'
+    WEIGHT_DECAY: 0.0
+  LR_SCHEDULER:
+    TYPE: 'plateau'
+    LR_FT: 0.00001
+    LR_NEW: 0.00001
+  EMA:
+    ENABLE: False
+
+METRIC:
+  TYPE: 'pedestrian'
+
+VIS:
+  CAM: 'valid'

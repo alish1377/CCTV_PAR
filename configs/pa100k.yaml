@@ -1,0 +1,50 @@
+NAME: 'epoch_0'
+
+DATASET:
+  TYPE: 'pedes'
+  NAME: 'PA100k'
+  TRAIN_SPLIT: 'trainval'
+  VAL_SPLIT: 'test'
+  ZERO_SHOT: False
+  LABEL: 'eval'
+  HEIGHT: 256
+  WIDTH: 128
+
+RELOAD:
+  TYPE: False
+  NAME: 'backbone'
+
+BACKBONE:
+  TYPE: 'swin_b' # swin_t/s/b
+
+CLASSIFIER:
+  NAME: 'linear'
+  POOLING: 'avg'
+  SCALE: 1
+  BN: False
+
+LOSS:
+  TYPE: 'bceloss'
+  LOSS_WEIGHT: [1]
+  SAMPLE_WEIGHT: 'weight'
+
+
+TRAIN:
+  CLIP_GRAD: True
+  MAX_EPOCH: 1
+  BATCH_SIZE: 16
+  OPTIMIZER:
+    TYPE: 'adam'
+    WEIGHT_DECAY: 0.0
+  LR_SCHEDULER:
+    TYPE: 'plateau'
+    LR_FT: 0.0001
+    LR_NEW: 0.0001
+  EMA:
+    ENABLE: False
+
+METRIC:
+  TYPE: 'pedestrian'
+
+VIS:
+  CAM: 'valid'

@@ -1,0 +1,128 @@
+code save in exp_result\NATIVE\swin_b_test1\code_2025-12-19_18-18-15.tar.gz
+BACKBONE:
+  MULTISCALE: True
+  TYPE: swin_b
+CLASSIFIER:
+  BN: False
+  NAME: linear
+  POOLING: avg
+  SCALE: 1
+  TYPE: base
+DATASET:
+  ALL_ATTRS: None
+  ATTRS: ['Age_young', 'Age_adult', 'Age_old', 'Gender_female', 'Hair_short', 'Hair_long', 'Hair_bald', 'Upper_short', 'U_black', 'U_blue', 'U_brown', 'U_green', 'U_grey', 'U_orange', 'U_pink', 'U_purple', 'U_red', 'U_white', 'U_yellow', '////U_Others////', 'L_black', 'L_blue', 'L_brown', 'L_green', 'L_grey', 'L_orange', 'L_pink', 'L_purple', 'L_red', 'L_white', 'L_yellow', '////L_Others////', 'Backpack', 'Bag', 'Glasses', 'Sunglasses', 'Hat']
+  COLOR_ATTRS: None
+  HEIGHT: 256
+  IMAGE_PATH: data/NATIVE/main_data/filtered_refined_data
+  LABEL: eval
+  NAME: NATIVE
+  NATIVE_EXCEL: data/NATIVE/label/refined_Native_dataset.xlsx
+  OTHER_ATTRS: None
+  PHASE1_ROOT_PATH: data/phase1/annotations/phase1/
+  PHASE2_ROOT_PATH: data/phase2/
+  REMOVE_LOW_QUALITY: False
+  ROOT_PATH: data/phase2/
+  TARGETTRANSFORM: []
+  TEST_NATIVE_SPLIT: 0.0
+  TEST_SPLIT: test
+  TRAIN_NATIVE_SPLIT: 0.7
+  TRAIN_SPLIT: trainval
+  TYPE: pedes
+  VAL_NATIVE_SPLIT: 0.3
+  VAL_SPLIT: test
+  WHICH_ATTRS: None
+  WIDTH: 128
+  ZERO_SHOT: False
+DISTRIBUTTED: False
+INFER:
+  SAMPLING: False
+LOSS:
+  LOSS_WEIGHT: [1]
+  POSE_SCALE: False
+  SAMPLE_WEIGHT: weight
+  SIZESUM: True
+  TYPE: gradnormloss
+METRIC:
+  TYPE: pedestrian
+NAME: _test1
+REDIRECTOR: True
+RELOAD:
+  ADAPTFORMER: False
+  BEST_PRETRAINED_WEIGHT: 
+  CONTINUE_CONVNEXT: False
+  FREEZE: False
+  HALFADAPTRATIO: 1.0
+  MODEL_FOLDER_NAME: pretrained_model
+  NAME: backbone
+  PARTIAL_FINE_TUNING: False
+  PRETRAINED_FLAG: True
+  PTH: best_model.pth
+  TYPE: True
+TEST:
+  CHECK_PER_FRAME: 2
+  MODEL_FOLDER_NAME: pretrained_model
+  OUTPUT_VIDEO_PATH: results_videos
+  PRETRAINED_WEIGHTS: best_model.pth
+  VIDEO_NAME: video1
+  VIDEO_PATH: test_videos
+  YOLO_CONF: 0.3
+  YOLO_MODEL: yolov8n.pt
+TRAIN:
+  AUX_LOSS_START: -1
+  BATCH_SIZE: 1
+  BN_WD: True
+  CLIP_GRAD: True
+  DATAAUG:
+    AUTOAUG_PROB: 0.5
+    TYPE: base
+  EMA:
+    DECAY: 0.9998
+    ENABLE: False
+    FORCE_CPU: False
+  LR_SCHEDULER:
+    LR_FT: 1e-05
+    LR_NEW: 0.0001
+    LR_STEP: [0]
+    TYPE: plateau
+    WMUP_COEF: 0.01
+    WMUP_LR_INIT: 1e-06
+  MAX_EPOCH: 12
+  NUM_WORKERS: 8
+  OPTIMIZER:
+    MOMENTUM: 0.9
+    TYPE: adam
+    WEIGHT_DECAY: 0.005
+  SHUFFLE: True
+TRANS:
+  DEC_LAYERS: 6
+  DIM_FFD: 2048
+  DIM_HIDDEN: 256
+  DROPOUT: 0.5
+  ENC_LAYERS: 6
+  EOS_COEF: 0.1
+  NHEADS: 8
+  NUM_QUERIES: 100
+  PRE_NORM: False
+VIS:
+  CAM: valid
+  TENSORBOARD:
+    ENABLE: True
+  VISDOM: False
+Compose(
+    Resize(size=(256, 128), interpolation=bilinear, max_size=None, antialias=warn)
+    Pad(padding=10, fill=0, padding_mode=constant)
+    RandomCrop(size=(256, 128), padding=None)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+)
+------------------------------------------------------------
+NATIVE attr_num : 37, eval_attr_num : 37 trainval set: 1249, test set: 536, 
+backbone keys
+dict_keys(['swin_b', 'swin_s', 'swin_t', 'convnext_tiny', 'convnext_small', 'convnext_base', 'convnext_large', 'convnext_xlarge', 'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152', 'resnext50_32x4d', 'resnext101_32x8d'])
+backbone values
+dict_values([<function swin_base_patch4_window7_224 at 0x00000220F7BD53A0>, <function swin_small_patch4_window7_224 at 0x00000220F7BD5440>, <function swin_tiny_patch4_window7_224 at 0x00000220F7BD54E0>, <function convnext_tiny at 0x00000220F7BD7880>, <function convnext_small at 0x00000220F7BD7920>, <function convnext_base at 0x00000220F7BD79C0>, <function convnext_large at 0x00000220F7BD7A60>, <function convnext_xlarge at 0x00000220F7BD7B00>, <function resnet18 at 0x00000220F7BE02C0>, <function resnet34 at 0x00000220F7BE0360>, <function resnet50 at 0x00000220F7BE0400>, <function resnet101 at 0x00000220F7BE04A0>, <function resnet152 at 0x00000220F7BE0540>, <function resnext50_32x4d at 0x00000220F7BE05E0>, <function resnext101_32x8d at 0x00000220F7BE0680>])
+best performance 0.8569661558816228 in epoch : 2025-07-29_17:07:16 in epoch 1
+backbone: swin_b, classifier: linear
+model_name: swin_b_test1
+The device of the model is: cpu
