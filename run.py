@@ -5,8 +5,10 @@ import sys
 # Set the GPU to use with "0" (or CPU with "")
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
+run_file = "test_video.py"
+
 # Forward any extra command-line args
-cmd = [sys.executable, "test_video.py"] + sys.argv[1:]
+cmd = [sys.executable, run_file] + sys.argv[1:]
 
 subprocess.run(cmd, check=True)
 

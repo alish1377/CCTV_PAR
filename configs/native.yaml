@@ -28,11 +28,11 @@ DATASET:
 
 
 RELOAD: # reload the model
-  TYPE: True # set this flag, reload the model(use this if we want to load aa 40 attributes)
+  TYPE: True # set this flag, reload the model
   NAME: 'backbone'
   MODEL_FOLDER_NAME: 'pretrained_model'
   FREEZE: False # set this flag, if you want to freeze the backbone(use this if we want to train the classifier only)
-  PARTIAL_FINE_TUNING: False # set this flag, if you want train cross-fusion and head blocks
+  #PARTIAL_FINE_TUNING: False # set this flag, if you want train cross-fusion and head blocks
   # Enable adaptformer
   ADAPTFORMER: False # set this flag, if you want to use adaptformer(use this if we want to train the classifier only)
   # Select half of data for adaptformer
@@ -70,6 +70,16 @@ TRAIN:
     LR_NEW: 0.0001
   EMA:
     ENABLE: False
+
+TEST:
+  TEST.MODEL_FOLDER_NAME : "pretrained_model"  # Name of the model folder (in exp_result/NATIVE directory)
+  TEST.PRETRAINED_WEIGHTS : "best_model.pth"   # Name of the pretrained weight
+  TEST.VIDEO_NAME : "video1"   # video name ("VIDEO_NAME.mp4")
+  TEST.VIDEO_PATH : "test_videos"  # This folder contains the test input videos
+  TEST.OUTPUT_VIDEO_PATH : "results_videos"  # This folder contains the test result videos
+  TEST.YOLO_MODEL : "yolov8n.pt"  # The detection model
+  TEST.YOLO_CONF : 0.3   # Confidence threshold for Yolo model
+  TEST.CHECK_PER_FRAME : 2   # Specify how many frames this flag should be checked once.
 
 METRIC:
   TYPE: 'pedestrian'
