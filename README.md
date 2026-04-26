@@ -65,3 +65,34 @@ To use pretrained weights, set `RELOAD -> TYPE` to `True`. To define the directo
 Inference Details
 =================
 We test our model on videos! You can configure the inference parameters in the `TEST` section of the `configs\native.yaml` file. This includes parameters like the detection model, the output path, and other related settings. The target video name should be specified inside the `test_video.py` file.
+
+Evaluation Results
+=================
+
+Based on our experiments, we evaluated different fine-tuning and optimization strategies. The results are summarized below.
+
+### Table 2: Fine-Tuning Strategies Comparison
+
+| Strategy | attr_acc (%) | mean_acc (%) | pos_recall (%) | neg_recall (%) |
+| :--- | :--- | :--- | :--- | :--- |
+| Full fine-tuning | $96.40\pm0.05$ | $80.79\pm2.52$ | $64.75\pm4.49$ | $96.90\pm0.58$ |
+| Partial fine-tuning | $95.99\pm0.1$ | $78.96\pm0.39$ | $61.87\pm0.41$ | $96.06\pm0.65$ |
+| Head fine-tuning | $96.05\pm0.23$ | $79.91\pm1.68$ | $63.05\pm3.11$ | $96.77\pm0.31$ |
+
+*Note: Full fine-tuning outperforms partial and head fine-tuning and is used as the baseline for further optimization.*
+
+### Table 3: Comparison of Optimization Strategies
+
+| Strategy | attr_acc (%) | mean_acc (%) | pos_recall (%) | neg_recall (%) |
+| :--- | :--- | :--- | :--- | :--- |
+| Full fine-tuning (basis) | $96.40\pm0.05$ | $80.79\pm2.52$ | $64.75\pm4.49$ | $96.90\pm0.58$ |
+| Categorical loss | $95.65\pm0.14$ | $79.81\pm1.7$ | $63.29\pm3.17$ | $95.94\pm0.25$ |
+| Loss_weight | $96.26\pm0.29$ | $84.22\pm0.39$ | $71.37\pm1.17$ | $97.06\pm0.39$ |
+| Loss_weight + Update_logits | $96.36\pm0.26$ | $83.64\pm1.29$ | $70.43\pm2.64$ | $96.85\pm0.38$ |
+| Loss_weight + GradNorm | $96.13\pm0.13$ | $85.27\pm0.68$ | $74.35\pm1.42$ | $96.19\pm0.07$ |
+| Loss_weight + Focal loss | $96.50\pm0.09$ | $84.15\pm1.6$ | $70.84\pm3$ | $97.45\pm0.2$ |
+
+*Note: The combination of Loss_weight and GradNorm provides the best overall performance. It improves positive recall by $9.6\%$ and mean accuracy by $4.48\%$ compared to the baseline.*
+
+
+
