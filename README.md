@@ -92,7 +92,7 @@ Based on our experiments, we evaluated different fine-tuning and optimization st
 | Loss_weight + GradNorm | $96.13\pm0.13$ | $85.27\pm0.68$ | $74.35\pm1.42$ | $96.19\pm0.07$ |
 | Loss_weight + Focal loss | $96.50\pm0.09$ | $84.15\pm1.6$ | $70.84\pm3$ | $97.45\pm0.2$ |
 
-*Note: The combination of Loss_weight and GradNorm provides the best overall performance. It improves positive recall by $9.6\%$ and mean accuracy by $4.48\%$ compared to the baseline.*
+*Note: The combination of `Loss_weight` and GradNorm provides the best overall performance. It improves positive recall by **9.6%** and mean accuracy by **4.48%** compared to the baseline.*
 
 
 
